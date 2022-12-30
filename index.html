@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battleship</title>
+    <script>
+        posX = -1;
+        posY = -1;
+        gameStart = false;
+        playerShipsPlaced = 0;
+        comShipsPlaced = 0;
+        playerShipsFound = "";
+        comShipsFound = "";
+        shipChar = "A";
+        shipLength = 5;
+        isTen = false;
+        function placeShip(pos, isHorizontal){
+            if(isHorizontal){
+                for (let index = 0; index < shipLength; index++) {
+                    tempPos = pos + index;
+                    console.log("Test2: " + tempPos);
+                    if(Math.floor(pos/100) != Math.floor(pos/100) || tempPos%10 < pos%10 || tempPos >= 200){
+                        return false
+                    }
+                    if(document.getElementById(tempPos).value != undefined){
+                        console.log("Bad place" + tempPos)
+                        return false;
+                    }
+                }
+                for (let index = 0; index < shipLength; index++) {
+                    tempPos = pos + index;
+                    document.getElementById(tempPos).value = shipChar;
+                    if(playerShipsPlaced != 5)
+                    document.getElementById(tempPos).style.backgroundColor = "Blue";
+                }
+            }
+            else{
+                for (let index = 0; index < shipLength; index++) {
+                    tempPos = pos + index*10;
+                    console.log("Test2: " + tempPos);
+                    if(Math.floor(pos/100) != Math.floor(pos/100) || tempPos%10 < pos%10 || tempPos >= 200){
+                        console.log("Bad place" + tempPos)
+                        return false;
+                    }
+                    if(document.getElementById(tempPos).value != undefined){
+                        console.log("Bad place" + tempPos)
+                        return false;
+                    }
+                }
+                for (let index = 0; index < shipLength; index++) {
+                    tempPos = pos + index*10;
+                    console.log("Test2: " + tempPos);
+                    document.getElementById(tempPos).value = shipChar;
+                    if(playerShipsPlaced != 5)
+                    document.getElementById(tempPos).style.backgroundColor = "Blue";
+                }
+            }
+            return true;
+        }
+        function attack(pos){
+            if(document.getElementById(pos).style.backgroundColor == "red" || document.getElementById(pos).style.backgroundColor == "white"){
+                return "Z";
+            } else if (document.getElementById(pos).value == undefined){
+                document.getElementById("display").innerHTML = "It is a miss";
+                document.getElementById(pos).style.backgroundColor = "white";
+                return "Y";
+            }
+            else{
+                document.getElementById("display").innerHTML = "It is a hit";
+                document.getElementById(pos).style.backgroundColor = "red";
+                document.getElementById(pos).innerHTML = document.getElementById(pos).value;
+                return document.getElementById(pos).value;
+            }
+        }
+        function placeCPUShips(){
+            shipLength = 5;
+            shipChar = "A"
+            randPos = -1;
+            dir = true;
+            do {
+                randPos = Math.floor(Math.random()*100) + 100;
+                temp = Math.random()*2;
+                dir = (temp>1);
+            } while (!placeShip(randPos, dir));
+            console.log("CPU" + shipLength + " " + randPos + " " + dir);
+            shipLength = 4;
+            shipChar = "B"
+            do {
+                randPos = Math.floor(Math.random()*100) + 100;
+                temp = Math.random()*2;
+                dir = (temp>1);
+            } while (!placeShip(randPos, dir));
+            console.log("CPU" + shipLength + " " + randPos + " " + dir);
+            
+            shipLength = 3;
+            shipChar = "D"
+            do {
+                randPos = Math.floor(Math.random()*100) + 100;
+                temp = Math.random()*2;
+                dir = (temp>1);
+            } while (!placeShip(randPos, dir));
+            console.log("CPU" + shipLength + " " + randPos + " " + dir);
+
+            shipLength = 3;
+            shipChar = "S"
+            do {
+                randPos = Math.floor(Math.random()*100) + 100;
+                temp = Math.random()*2;
+                dir = (temp>1);
+            } while (!placeShip(randPos, dir));
+            console.log("CPU" + shipLength + " " + randPos + " " + dir);
+
+            shipLength = 2;
+            shipChar = "P"
+            do {
+                randPos = Math.floor(Math.random()*100) + 100;
+                temp = Math.random()*2;
+                dir = (temp>1);
+            } while (!placeShip(randPos, dir));
+            console.log("CPU" + shipLength + " " + randPos + " " + dir);
+            
+        }
+        function playerInput(){
+            pos = document.getElementById("pos").value;
+            check = document.getElementById("check").checked;
+            if(pos.length == 3 || pos.substring(1) == "10"){
+                isTen = true;
+                pos = pos.substring(0,1) + "0";
+            }
+            else{
+                isTen = false;
+            }
+            console.log("Test" + pos + check)
+            if(pos.length != 2 || isNaN(pos.substring(1)) || !pos.substring(0,1).match(/[A-J]/i)){
+                console.log(pos+" fail");
+            }
+            else if(playerShipsPlaced==5){
+                secondPos = parseInt(pos.substring(1)) -1;
+                firstPos = 9
+                if(pos.substring(0,1) == "A"){
+                    firstPos = 0
+                }
+                else if(pos.substring(0,1) == "B"){
+                    firstPos = 1
+                }
+                else if(pos.substring(0,1) == "C"){
+                    firstPos = 2
+                }
+                else if(pos.substring(0,1) == "D"){
+                    firstPos = 3
+                }
+                else if(pos.substring(0,1) == "E"){
+                    firstPos = 4
+                }
+                else if(pos.substring(0,1) == "F"){
+                    firstPos = 5
+                }
+                else if(pos.substring(0,1) == "G"){
+                    firstPos = 6
+                }
+                else if(pos.substring(0,1) == "H"){
+                    firstPos = 7
+                }
+                else if(pos.substring(0,1) == "I"){
+                    firstPos = 8
+                }
+                if(isTen){
+                    secondPos = 9;
+                }
+                result = attack(firstPos+10*secondPos+100)
+                if(result == "Y"){
+                    do {
+                        randPos = Math.floor(Math.random()*100);
+                        result = attack(randPos)
+                            
+                        if(result != "Y" && result != "Z")
+                        playerShipsFound += result;
+                        if(playerShipsFound.length == 17)
+                        document.getElementById("display").innerHTML = "You lost!"
+                    } while (result != "Y");
+                }
+                else if(result != "Z"){
+                    comShipsFound += result;
+                    if(comShipsFound.length == 17)
+                    document.getElementById("display").innerHTML = "You won!"
+                }
+            }
+            else{
+                secondPos = parseInt(pos.substring(1)) -1;
+                firstPos = 9
+                if(pos.substring(0,1) == "A"){
+                    firstPos = 0
+                }
+                else if(pos.substring(0,1) == "B"){
+                    firstPos = 1
+                }
+                else if(pos.substring(0,1) == "C"){
+                    firstPos = 2
+                }
+                else if(pos.substring(0,1) == "D"){
+                    firstPos = 3
+                }
+                else if(pos.substring(0,1) == "E"){
+                    firstPos = 4
+                }
+                else if(pos.substring(0,1) == "F"){
+                    firstPos = 5
+                }
+                else if(pos.substring(0,1) == "G"){
+                    firstPos = 6
+                }
+                else if(pos.substring(0,1) == "H"){
+                    firstPos = 7
+                }
+                else if(pos.substring(0,1) == "I"){
+                    firstPos = 8
+                }
+                if(isTen){
+                    secondPos = 9;
+                }
+                console.log(firstPos + " " + secondPos);
+                console.log(firstPos+10*secondPos);
+                if(placeShip(firstPos+10*secondPos, check)){
+                    playerShipsPlaced++;
+                    if(shipChar=="A"){
+                        shipLength = 4
+                        shipChar = "B"
+                        document.getElementById("display").innerHTML = "Choose where to place your 4 spaces Battleship"
+                    }
+                    else if(shipChar=="B"){
+                        shipLength = 3
+                        shipChar = "D"
+                        document.getElementById("display").innerHTML = "Choose where to place your 3 spaces Destroyer"
+                    }
+                    else if(shipChar=="D"){
+                        shipLength = 3
+                        shipChar = "S"
+                        document.getElementById("display").innerHTML = "Choose where to place your 3 spaces Submarine"
+                    }
+                    else if(shipChar=="S"){
+                        shipLength = 2
+                        shipChar = "P"
+                        document.getElementById("display").innerHTML = "Choose where to place your 2 spaces Patrol Boat"
+                    }
+                    else{
+                        placeCPUShips();
+                        gameStart = true;
+                        document.getElementById("display").innerHTML = "Choose a location to drop a bomb on your opponent's grid"
+                    }
+                }
+
+            }
+        }
+    </script>
+    <style>
+        .board{
+            display: grid;
+            grid-template-columns: repeat(11, 30px);
+            grid-template-rows: repeat(11, 30px);
+            border: 2px solid white;
+        }
+        .board>.number{
+            background-color: white;
+        }
+        .board>div{
+            border: 2px solid black;
+            background-color: aqua;
+
+        }
+    </style>
+</head>
+<body>
+    <h1>Battleship</h1>
+  
+    <label for="pos">Enter a position</label>
+    <input type="text" id="pos" name="pos">
+    <label for="horizontal">Click to make boat horizontal</label>
+    <input type="checkbox" id="check" name="check">
+    <button onclick="playerInput()">Submit</button>
+  <p id = "display">Choose where to place your 5 spaces Aircraft Carrier</p>
+    <div class="board">
+        <div> </div>
+        <div class="number">A</div>
+        <div class="number">B</div>
+        <div class="number">C</div>
+        <div class="number">D</div>
+        <div class="number">E</div>
+        <div class="number">F</div>
+        <div class="number">G</div>
+        <div class="number">H</div>
+        <div class="number">I</div>
+        <div class="number">J</div>
+        <div class="number">1</div>
+        <div id="0"></div>
+        <div id="1"></div>
+        <div id="2"></div>
+        <div id="3"></div>
+        <div id="4"></div>
+        <div id="5"></div>
+        <div id="6"></div>
+        <div id="7"></div>
+        <div id="8"></div>
+        <div id="9"></div>
+        <div class="number">2</div>
+        <div id="10"></div>
+        <div id="11"></div>
+        <div id="12"></div>
+        <div id="13"></div>
+        <div id="14"></div>
+        <div id="15"></div>
+        <div id="16"></div>
+        <div id="17"></div>
+        <div id="18"></div>
+        <div id="19"></div>
+        <div class="number">3</div>
+        <div id="20"></div>
+        <div id="21"></div>
+        <div id="22"></div>
+        <div id="23"></div>
+        <div id="24"></div>
+        <div id="25"></div>
+        <div id="26"></div>
+        <div id="27"></div>
+        <div id="28"></div>
+        <div id="29"></div>
+        <div class="number">4</div>
+        <div id="30"></div>
+        <div id="31"></div>
+        <div id="32"></div>
+        <div id="33"></div>
+        <div id="34"></div>
+        <div id="35"></div>
+        <div id="36"></div>
+        <div id="37"></div>
+        <div id="38"></div>
+        <div id="39"></div>
+        <div class="number">5</div>
+        <div id="40"></div>
+        <div id="41"></div>
+        <div id="42"></div>
+        <div id="43"></div>
+        <div id="44"></div>
+        <div id="45"></div>
+        <div id="46"></div>
+        <div id="47"></div>
+        <div id="48"></div>
+        <div id="49"></div>
+        <div class="number">6</div>
+        <div id="50"></div>
+        <div id="51"></div>
+        <div id="52"></div>
+        <div id="53"></div>
+        <div id="54"></div>
+        <div id="55"></div>
+        <div id="56"></div>
+        <div id="57"></div>
+        <div id="58"></div>
+        <div id="59"></div>
+        <div class="number">7</div>
+        <div id="60"></div>
+        <div id="61"></div>
+        <div id="62"></div>
+        <div id="63"></div>
+        <div id="64"></div>
+        <div id="65"></div>
+        <div id="66"></div>
+        <div id="67"></div>
+        <div id="68"></div>
+        <div id="69"></div>
+        <div class="number">8</div>
+        <div id="70"></div>
+        <div id="71"></div>
+        <div id="72"></div>
+        <div id="73"></div>
+        <div id="74"></div>
+        <div id="75"></div>
+        <div id="76"></div>
+        <div id="77"></div>
+        <div id="78"></div>
+        <div id="79"></div>
+        <div class="number">9</div>
+        <div id="80"></div>
+        <div id="81"></div>
+        <div id="82"></div>
+        <div id="83"></div>
+        <div id="84"></div>
+        <div id="85"></div>
+        <div id="86"></div>
+        <div id="87"></div>
+        <div id="88"></div>
+        <div id="89"></div>
+        <div class="number">10</div>
+        <div id="90"></div>
+        <div id="91"></div>
+        <div id="92"></div>
+        <div id="93"></div>
+        <div id="94"></div>
+        <div id="95"></div>
+        <div id="96"></div>
+        <div id="97"></div>
+        <div id="98"></div>
+        <div id="99"></div>
+    </div>
+    <div class="board">
+        <div> </div>
+        <div class="number">A</div>
+        <div class="number">B</div>
+        <div class="number">C</div>
+        <div class="number">D</div>
+        <div class="number">E</div>
+        <div class="number">F</div>
+        <div class="number">G</div>
+        <div class="number">H</div>
+        <div class="number">I</div>
+        <div class="number">J</div>
+        <div class="number">1</div>
+        <div id="100"></div>
+        <div id="101"></div>
+        <div id="102"></div>
+        <div id="103"></div>
+        <div id="104"></div>
+        <div id="105"></div>
+        <div id="106"></div>
+        <div id="107"></div>
+        <div id="108"></div>
+        <div id="109"></div>
+        <div class="number">2</div>
+        <div id="110"></div>
+        <div id="111"></div>
+        <div id="112"></div>
+        <div id="113"></div>
+        <div id="114"></div>
+        <div id="115"></div>
+        <div id="116"></div>
+        <div id="117"></div>
+        <div id="118"></div>
+        <div id="119"></div>
+        <div class="number">3</div>
+        <div id="120"></div>
+        <div id="121"></div>
+        <div id="122"></div>
+        <div id="123"></div>
+        <div id="124"></div>
+        <div id="125"></div>
+        <div id="126"></div>
+        <div id="127"></div>
+        <div id="128"></div>
+        <div id="129"></div>
+        <div class="number">4</div>
+        <div id="130"></div>
+        <div id="131"></div>
+        <div id="132"></div>
+        <div id="133"></div>
+        <div id="134"></div>
+        <div id="135"></div>
+        <div id="136"></div>
+        <div id="137"></div>
+        <div id="138"></div>
+        <div id="139"></div>
+        <div class="number">5</div>
+        <div id="140"></div>
+        <div id="141"></div>
+        <div id="142"></div>
+        <div id="143"></div>
+        <div id="144"></div>
+        <div id="145"></div>
+        <div id="146"></div>
+        <div id="147"></div>
+        <div id="148"></div>
+        <div id="149"></div>
+        <div class="number">6</div>
+        <div id="150"></div>
+        <div id="151"></div>
+        <div id="152"></div>
+        <div id="153"></div>
+        <div id="154"></div>
+        <div id="155"></div>
+        <div id="156"></div>
+        <div id="157"></div>
+        <div id="158"></div>
+        <div id="159"></div>
+        <div class="number">7</div>
+        <div id="160"></div>
+        <div id="161"></div>
+        <div id="162"></div>
+        <div id="163"></div>
+        <div id="164"></div>
+        <div id="165"></div>
+        <div id="166"></div>
+        <div id="167"></div>
+        <div id="168"></div>
+        <div id="169"></div>
+        <div class="number">8</div>
+        <div id="170"></div>
+        <div id="171"></div>
+        <div id="172"></div>
+        <div id="173"></div>
+        <div id="174"></div>
+        <div id="175"></div>
+        <div id="176"></div>
+        <div id="177"></div>
+        <div id="178"></div>
+        <div id="179"></div>
+        <div class="number">9</div>
+        <div id="180"></div>
+        <div id="181"></div>
+        <div id="182"></div>
+        <div id="183"></div>
+        <div id="184"></div>
+        <div id="185"></div>
+        <div id="186"></div>
+        <div id="187"></div>
+        <div id="188"></div>
+        <div id="189"></div>
+        <div class="number">10</div>
+        <div id="190"></div>
+        <div id="191"></div>
+        <div id="192"></div>
+        <div id="193"></div>
+        <div id="194"></div>
+        <div id="195"></div>
+        <div id="196"></div>
+        <div id="197"></div>
+        <div id="198"></div>
+        <div id="199"></div>
+    </div>
+</body>
+</html>
