@@ -21,7 +21,7 @@
                 for (let index = 0; index < shipLength; index++) {
                     tempPos = pos + index;
                     console.log("Test2: " + tempPos);
-                    if(Math.floor(pos/100) != Math.floor(pos/100) || tempPos%10 < pos%10 || tempPos >= 200){
+                    if(Math.floor(tempPos/100) != Math.floor(pos/100) || tempPos%10 < pos%10 || tempPos >= 200){
                         return false
                     }
                     if(document.getElementById(tempPos).value != undefined){
@@ -40,7 +40,7 @@
                 for (let index = 0; index < shipLength; index++) {
                     tempPos = pos + index*10;
                     console.log("Test2: " + tempPos);
-                    if(Math.floor(pos/100) != Math.floor(pos/100) || tempPos%10 < pos%10 || tempPos >= 200){
+                    if(Math.floor(tempPos/100) != Math.floor(pos/100) || tempPos%10 < pos%10 || tempPos >= 200){
                         console.log("Bad place" + tempPos)
                         return false;
                     }
